@@ -19,8 +19,8 @@ python app.py
 Se você usa explicitamente o Python 3.14:
 
 ```powershell
-& C:\Users\migue\AppData\Local\Programs\Python\Python314\python.exe -m pip install -r requirements.txt
-& C:\Users\migue\AppData\Local\Programs\Python\Python314\python.exe app.py
+& C:\Users\(nome_usuario)\AppData\Local\Programs\Python\Python314\python.exe -m pip install -r requirements.txt
+& C:\Users\(nome_usuario)\AppData\Local\Programs\Python\Python314\python.exe app.py
 ```
 
 Abra `http://127.0.0.1:5000`.
