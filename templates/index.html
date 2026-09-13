@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}Planilhas — Lab 217{% endblock %}
+{% block content %}
+<section aria-labelledby="titulo">
+  <h1 id="titulo">Controle de planilhas do Lab 217</h1>
+  <p class="intro">Crie uma planilha a partir do modelo, envie uma planilha já existente ou abra uma das planilhas salvas. O arquivo Excel é o documento principal.</p>
+</section>
+
+<div class="grade-dupla">
+  <section class="cartao" aria-labelledby="nova-titulo">
+    <h2 id="nova-titulo">Nova planilha</h2>
+    <form method="post" action="{{ url_for('nova_planilha') }}">
+      <label for="nome">Nome do arquivo</label>
+      <input id="nome" name="nome" type="text" placeholder="Ex.: Compras_2026" required>
+      <button type="submit">Criar pelo modelo</button>
+    </form>
+  </section>
+
+  <section class="cartao" aria-labelledby="upload-titulo">
+    <h2 id="upload-titulo">Enviar planilha existente</h2>
+    <form method="post" action="{{ url_for('upload_planilha') }}" enctype="multipart/form-data">
+      <label for="arquivo">Arquivo Excel (.xlsx)</label>
+      <input id="arquivo" name="arquivo" type="file" accept=".xlsx" required>
+      <button type="submit">Salvar e abrir depois</button>
+    </form>
+  </section>
+</div>
+
+<section class="cartao" aria-labelledby="salvas-titulo">
+  <h2 id="salvas-titulo">Planilhas salvas</h2>
+  {% if planilhas %}
+  <div class="table-wrap" tabindex="0" aria-label="Tabela rolável de planilhas salvas">
+    <table>
+      <caption class="sr-only">Planilhas Excel disponíveis no sistema</caption>
+      <thead><tr><th scope="col">Arquivo</th><th scope="col">Última alteração</th><th scope="col">Ações</th></tr></thead>
+      <tbody>
+      {% for p in planilhas %}
+        <tr>
+          <td><a href="{{ url_for('ver_planilha', filename=p.name) }}">{{ p.name }}</a></td>
+          <td>{{ p.stat().st_mtime|int }}</td>
+          <td class="acoes">
+            <a class="botao secundario" href="{{ url_for('ver_planilha', filename=p.name) }}">Abrir</a>
+            <a class="botao secundario" href="{{ url_for('baixar', filename=p.name) }}">Baixar</a>
+            <form method="post" action="{{ url_for('excluir_arquivo', filename=p.name) }}" onsubmit="return confirm('Excluir este arquivo?');">
+              <button class="perigo" type="submit">Excluir arquivo</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+    <p>Nenhuma planilha salva ainda.</p>
+  {% endif %}
+</section>
+{% endblock %}

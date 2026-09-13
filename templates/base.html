@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Controle de Planilhas — Lab 217{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+  <header class="topo">
+    <div>
+      <strong>Laboratório 217</strong>
+      <span>Departamento de Química — controle por planilhas</span>
+    </div>
+    <nav aria-label="Menu principal">
+      <a href="{{ url_for('index') }}">Planilhas</a>
+    </nav>
+  </header>
+
+  <main id="conteudo" class="container" tabindex="-1">
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+      {% if mensagens %}
+        <div aria-live="polite" aria-atomic="true">
+          {% for categoria, mensagem in mensagens %}
+            <p class="alerta {{ categoria }}">{{ mensagem }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="rodape">
+    <p>Os dados principais ficam nos arquivos Excel (.xlsx), que podem ser editados também fora do sistema.</p>
+  </footer>
+</body>
+</html>

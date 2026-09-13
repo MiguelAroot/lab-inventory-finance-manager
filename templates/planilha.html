@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% block title %}{{ filename }} — Lab 217{% endblock %}
+{% block content %}
+<div class="cabecalho-pagina">
+  <div>
+    <p><a href="{{ url_for('index') }}">← Voltar às planilhas</a></p>
+    <h1>{{ filename }}</h1>
+    <p>O arquivo Excel é o documento principal. Tudo que você cadastra aqui é salvo nele.</p>
+  </div>
+  <div class="acoes"><a class="botao" href="{{ url_for('baixar', filename=filename) }}">Baixar .xlsx</a></div>
+</div>
+
+<nav class="abas" aria-label="Abas da planilha">
+{% for nome in abas %}<a href="{{ url_for('ver_planilha', filename=filename, aba=nome) }}" {% if nome==aba %}aria-current="page"{% endif %}>{{ nome }}</a>{% endfor %}
+</nav>
+
+{% if totals %}
+<section class="resumo" aria-label="Resumo financeiro">
+  <div><span>Total das compras</span><strong>R$ {{ '%.2f'|format(totals.total) }}</strong></div>
+  <div><span>Total pago</span><strong>R$ {{ '%.2f'|format(totals.pago) }}</strong></div>
+  <div><span>Dívida atual</span><strong>R$ {{ '%.2f'|format(totals.divida) }}</strong></div>
+</section>
+{% endif %}
+
+{% if editable %}
+<section class="cartao">
+  <details open>
+    <summary>Adicionar registro em {{ aba }}</summary>
+    <p><small>O ID é automático e não precisa ser digitado.</small></p>
+    <form class="form-grid" method="post" action="{{ url_for('adicionar', filename=filename, aba=aba) }}">
+      {% for name,label,kind,col in fields %}
+      <div class="campo {% if kind=='textarea' %}campo-largo{% endif %}">
+        <label for="add-{{name}}">{{label}}</label>
+        {% if kind.startswith('select:') %}
+          <select id="add-{{name}}" name="{{name}}"><option value="">Selecione</option>{% for op in kind.split(':',1)[1].split('|') %}<option>{{op}}</option>{% endfor %}</select>
+        {% elif kind=='textarea' %}<textarea id="add-{{name}}" name="{{name}}" rows="3"></textarea>
+        {% elif kind=='date' %}<input id="add-{{name}}" name="{{name}}" type="date">
+        {% elif kind in ('number','money') %}<input id="add-{{name}}" name="{{name}}" type="number" step="0.01">
+        {% else %}<input id="add-{{name}}" name="{{name}}" type="text">
+        {% endif %}
+      </div>
+      {% endfor %}
+      <div class="campo-largo"><button type="submit">Adicionar à planilha</button></div>
+    </form>
+  </details>
+</section>
+{% endif %}
+
+<section class="cartao">
+<h2>Aba: {{aba}}</h2>
+<div class="table-wrap" tabindex="0" aria-label="Tabela rolável">
+<table>
+<thead><tr>{% for h in headers %}<th scope="col">{{h}}</th>{% endfor %}<th scope="col">Ações</th></tr></thead>
+<tbody>
+{% for row in rows %}
+<tr{% if row.status %} class="status-{{row.status|lower}}"{% endif %}>
+{% for v in row["values"] %}<td>{{v}}</td>{% endfor %}
+<td class="acoes">
+<a class="botao secundario" href="{{ url_for('editar', filename=filename, aba=aba, row=row.excel_row) }}">Editar</a>
+<form method="post" action="{{ url_for('excluir', filename=filename, aba=aba, row=row.excel_row) }}" onsubmit="return confirm('Excluir este registro?');"><button class="perigo" type="submit">Excluir</button></form>
+</td>
+</tr>
+{% else %}<tr><td colspan="99">Nenhum registro preenchido.</td></tr>{% endfor %}
+</tbody>
+</table>
+</div>
+</section>
+{% endblock %}

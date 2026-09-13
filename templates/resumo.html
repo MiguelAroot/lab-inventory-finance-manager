@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Resumo — Lab 217{% endblock %}
+{% block content %}
+<p><a href="{{ url_for('index') }}">← Voltar às planilhas</a></p>
+<h1>Resumo financeiro — {{filename}}</h1>
+<nav class="abas" aria-label="Abas da planilha">{% for nome in abas %}<a href="{{ url_for('ver_planilha', filename=filename, aba=nome) }}" {% if nome=='Resumo' %}aria-current="page"{% endif %}>{{nome}}</a>{% endfor %}</nav>
+<section class="resumo" aria-label="Resumo financeiro">
+<div><span>Total das compras</span><strong>R$ {{'%.2f'|format(total)}}</strong></div>
+<div><span>Total pago</span><strong>R$ {{'%.2f'|format(pago)}}</strong></div>
+<div><span>Dívida atual</span><strong>R$ {{'%.2f'|format(divida)}}</strong></div>
+</section>
+<section class="cartao"><h2>Como o cálculo funciona</h2><p>Cada compra possui um ID automático. Os pagamentos são vinculados a esse ID. Pagamentos parciais reduzem somente o saldo daquele item; quando o saldo chega a zero, o item fica PAGO e deixa de compor a dívida.</p><p><a class="botao" href="{{ url_for('baixar', filename=filename) }}">Baixar planilha Excel</a></p></section>
+{% endblock %}
