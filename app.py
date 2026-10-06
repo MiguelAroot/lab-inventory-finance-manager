@@ -353,7 +353,7 @@ def excluir(filename, aba, row):
     ws = wb[aba]
     record_id = ws.cell(row, 1).value
     if aba == "Controle":
-        # Limpa o objeto, preserva seu ID, e remove pagamentos vinculados para não deixar valores órfãos.
+        # limpa, preserva id, tira os valores sozinhos q vao ficar(para boas praticas e segurança tmb)
         for c in range(2, 11):
             ws.cell(row, c).value = None
         ensure_control_formulas(ws, row)
