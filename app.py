@@ -91,11 +91,11 @@ def set_calc_on_load(wb):
 
 
 def first_free_row(ws, key_col: int) -> int:
-    # IDs são pré-reservados; procuramos a primeira linha cujo conteúdo principal está vazio.
+    # ids são pre guardados
     for row in range(2, ws.max_row + 1):
         if ws.cell(row, key_col).value in (None, ""):
             return row
-    # Se acabarem as linhas reservadas, cria uma nova com ID sequencial.
+    # Se acabar as linhas reservadas dai cria uma nova com id sequencial
     row = ws.max_row + 1
     ids = [ws.cell(r, 1).value for r in range(2, ws.max_row + 1)]
     ids = [int(v) for v in ids if isinstance(v, (int, float))]
